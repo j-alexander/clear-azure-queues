@@ -88,12 +88,15 @@
     <Compile Include="AccountWindow.xaml.cs">
       <DependentUpon>AccountWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\NegateBooleanConverter.cs" />
+    <Compile Include="Converters\AbstractBooleanConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\BooleanConverter.cs" />
     <Compile Include="Converters\SingleLineTextConverter.cs" />
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\AccountSelectionModel.cs" />
     <Compile Include="Models\QueueModel.cs" />
     <Compile Include="Models\QueueSelectionModel.cs" />
+    <Compile Include="Settings\FileSettings.cs" />
     <Page Include="AccountWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

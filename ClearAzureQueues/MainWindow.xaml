@@ -4,15 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClearAzureQueues"
-        xmlns:converters="clr-namespace:ClearAzureQueues.Converters"
         mc:Ignorable="d"
         Title="Clear Azure Queues" Height="350" Width="680"
         WindowStartupLocation="CenterScreen"
         FocusManager.FocusedElement="{Binding ElementName=NewAccount}">
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="Visibility" />
-        <converters:NegateBooleanConverter x:Key="Negate" />
-    </Window.Resources>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -40,11 +35,22 @@
             </DockPanel>
         </Grid>
 
-        <ListView Grid.Column="0" Grid.Row="1" Grid.RowSpan="1" Name="AccountSelection"
+        <ListView Grid.Column="0" Grid.Row="1" Grid.RowSpan="1" Name="AccountSelection" SelectionMode="Single"
+                  MouseDoubleClick="AccountSelection_MouseDoubleClick"
                   ItemsSource="{Binding Accounts}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Account" Width="110" DisplayMemberBinding="{Binding Path=Account.AccountName}"/>
+                    <GridViewColumn Header="Account" Width="110">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Visibility="{Binding Path=Account.IsConnected, Converter={StaticResource Visibility}}">O</Label>
+                                    <Label Visibility="{Binding Path=Account.IsConnected, Converter={StaticResource NegateVisibility}}">X</Label>
+                                    <Label Content="{Binding Path=Account.AccountName}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

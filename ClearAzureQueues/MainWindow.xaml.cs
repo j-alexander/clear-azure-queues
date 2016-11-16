@@ -1,8 +1,10 @@
 ﻿using ClearAzureQueues.Models;
+using ClearAzureQueues.Settings;
 using System;
-using System.Linq;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 
@@ -16,7 +18,8 @@ namespace ClearAzureQueues {
 
         public MainWindow() {
             InitializeComponent();
-            DataContext = new AccountSelectionModel();
+            DataContext = FileSettings.Load();
+            Closing += (s, e) => FileSettings.Save(Model);
 
             var timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(30);
@@ -27,6 +30,13 @@ namespace ClearAzureQueues {
         private void Timer_Tick(object sender, EventArgs e) {
             foreach (QueueModel item in QueueSelection.Items) {
                 item.UpdateStatus();
+            }
+        }
+
+        private void AccountSelection_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            var model = AccountSelection.SelectedItem as QueueSelectionModel;
+            if (model != null) {
+                model.Account.Connect(model.Populate, () => { });
             }
         }
 

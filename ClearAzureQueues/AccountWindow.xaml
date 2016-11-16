@@ -9,11 +9,6 @@
         Title="Open Account" Height="200" Width="450"
         WindowStartupLocation="CenterOwner"
         FocusManager.FocusedElement="{Binding ElementName=AccountName}">
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="Visibility" />
-        <converters:NegateBooleanConverter x:Key="Negate" />
-        <converters:SingleLineTextConverter x:Key="SingleLine" />
-    </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition/>

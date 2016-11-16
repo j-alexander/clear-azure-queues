@@ -7,7 +7,21 @@ using System.Windows.Data;
 
 namespace ClearAzureQueues.Models {
 
+    public class QueueSelectionSettings {
+        public AccountSettings Account { get; set; }
+        public string NameFilter { get; set; }
+    }
+
     public class QueueSelectionModel : DependencyObject {
+
+        public QueueSelectionSettings Settings {
+            get {
+                return new QueueSelectionSettings() {
+                    Account = Account.Settings,
+                    NameFilter = NameFilter
+                };
+            }
+        }
 
         public static readonly DependencyProperty AccountProperty =
             DependencyProperty.Register("Account", typeof(AccountModel), typeof(QueueSelectionModel));
@@ -48,25 +62,31 @@ namespace ClearAzureQueues.Models {
             Populate();
         }
 
+        public QueueSelectionModel(QueueSelectionSettings settings) : this(new AccountModel(settings.Account)) {
+            NameFilter = settings.NameFilter;
+        }
+
         public void Populate() {
-            var worker = new BackgroundWorker();
-            worker.WorkerReportsProgress = true;
-            worker.DoWork += (sender, e) => {
-                var client = (CloudQueueClient)e.Argument;
-                foreach (var queue in client.ListQueues()) {
-                    worker.ReportProgress(0, queue);
-                }
-            };
-            worker.ProgressChanged += (sender, e) => {
-                var queue = (CloudQueue)e.UserState;
-                foreach (var existing in Queues)
-                    if (existing.QueueName == queue.Name)
-                        return;
-                Queues.Add(new QueueModel(queue));
-            };
-            worker.RunWorkerCompleted += (sender, e) => {
-            };
-            worker.RunWorkerAsync(Account.Client);
+            if (Account.IsConnected) {
+                var worker = new BackgroundWorker();
+                worker.WorkerReportsProgress = true;
+                worker.DoWork += (sender, e) => {
+                    var client = (CloudQueueClient)e.Argument;
+                    foreach (var queue in client.ListQueues()) {
+                        worker.ReportProgress(0, queue);
+                    }
+                };
+                worker.ProgressChanged += (sender, e) => {
+                    var queue = (CloudQueue)e.UserState;
+                    foreach (var existing in Queues)
+                        if (existing.QueueName == queue.Name)
+                            return;
+                    Queues.Add(new QueueModel(queue));
+                };
+                worker.RunWorkerCompleted += (sender, e) => {
+                };
+                worker.RunWorkerAsync(Account.Client);
+            }
         }
 
         private void Filter() {

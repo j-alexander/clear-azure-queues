@@ -7,7 +7,21 @@ using System.Windows;
 
 namespace ClearAzureQueues.Models {
 
+    public class AccountSettings {
+        public string AccountName { get; set; }
+        public string ConnectionString { get; set; }
+    }
+
     public class AccountModel : DependencyObject {
+
+        public AccountSettings Settings {
+            get {
+                return new AccountSettings() {
+                    AccountName = AccountName,
+                    ConnectionString = ConnectionString
+                };
+            }
+        }
 
         public static readonly DependencyProperty AccountNameProperty =
             DependencyProperty.Register("AccountName", typeof(string), typeof(AccountModel));
@@ -53,30 +67,40 @@ namespace ClearAzureQueues.Models {
             }
         }
 
+        public AccountModel(AccountSettings settings) {
+            AccountName = settings.AccountName;
+            ConnectionString = settings.ConnectionString;
+        }
+
         public void Connect(Action onSuccess, Action onFailure) {
-            IsConnecting = true;
-            var worker = new BackgroundWorker();
-            worker.DoWork += (sender, e) => {
-                var input = (string)e.Argument;
-                var account = CloudStorageAccount.Parse(input);
-                var client = account.CreateCloudQueueClient();
-                e.Result = client;
-            };
-            worker.RunWorkerCompleted += (sender, e) => {
-                IsConnecting = false;
-                if (e.Error != null) {
-                    ConnectionResult = String.Format("Error: {0}", e.Error.Message);
-                    onFailure();
-                } else if (e.Cancelled) {
-                    ConnectionResult = "You connection request was cancelled.";
-                    onFailure();
-                } else {
-                    Client = (CloudQueueClient)e.Result;
-                    IsConnected = true;
-                    onSuccess();
-                }
-            };
-            worker.RunWorkerAsync(ConnectionString);
+            if (!IsConnected && !IsConnecting) {
+                IsConnecting = true;
+                var worker = new BackgroundWorker();
+                worker.DoWork += (sender, e) => {
+                    var input = (string)e.Argument;
+                    var account = CloudStorageAccount.Parse(input);
+                    var client = account.CreateCloudQueueClient();
+                    e.Result = client;
+                };
+                worker.RunWorkerCompleted += (sender, e) => {
+                    IsConnecting = false;
+                    if (e.Error != null) {
+                        ConnectionResult = String.Format("Error: {0}", e.Error.Message);
+                        IsConnected = false;
+                        onFailure();
+                    } else if (e.Cancelled) {
+                        ConnectionResult = "You connection request was cancelled.";
+                        IsConnected = false;
+                        onFailure();
+                    } else {
+                        Client = (CloudQueueClient)e.Result;
+                        ConnectionResult = null;
+                        IsConnected = true;
+                        onSuccess();
+                    }
+                };
+                worker.RunWorkerAsync(ConnectionString);
+            }
         }
     }
 }
