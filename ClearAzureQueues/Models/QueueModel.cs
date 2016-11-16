@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage.Queue;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 
@@ -73,12 +74,16 @@ namespace ClearAzureQueues.Models {
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
             worker.DoWork += (sender, e) => {
+                var watch = Stopwatch.StartNew();
                 var queue = (CloudQueue)e.Argument;
                 while (!IsCancelling) {
                     queue.FetchAttributes();
-                    var count = queue.ApproximateMessageCount;
-                    if (count != null) {
-                        worker.ReportProgress(0, count);
+                    if (watch.Elapsed > TimeSpan.FromSeconds(3)) {
+                        var count = queue.ApproximateMessageCount;
+                        if (count != null) {
+                            worker.ReportProgress(0, count);
+                            watch.Restart();
+                        }
                     }
                     try {
                         queue.Clear(new QueueRequestOptions() {

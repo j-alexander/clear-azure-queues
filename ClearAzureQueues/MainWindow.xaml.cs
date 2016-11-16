@@ -1,5 +1,6 @@
 ﻿using ClearAzureQueues.Models;
 using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Navigation;
@@ -54,6 +55,13 @@ namespace ClearAzureQueues {
             var model = QueueSelection.SelectedItem as QueueModel;
             if (model != null) {
                 model.Cancel();
+            }
+        }
+
+        private void AbortAll_Click(object sender, RoutedEventArgs e) {
+            var queues = Model.Accounts.Where(x => x.Account.IsConnected).SelectMany(x => x.Queues);
+            foreach (var queue in queues) {
+                queue.Cancel();
             }
         }
 
