@@ -1,7 +1,9 @@
 ﻿using Microsoft.WindowsAzure.Storage.Queue;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 
 namespace ClearAzureQueues.Models {
 
@@ -21,8 +23,27 @@ namespace ClearAzureQueues.Models {
             set { SetValue(QueuesProperty, value); }
         }
 
+        public static readonly DependencyProperty FilteredQueuesProperty =
+            DependencyProperty.Register("FilteredQueues", typeof(ListCollectionView), typeof(QueueSelectionModel));
+        public ListCollectionView FilteredQueues {
+            get { return (ListCollectionView)GetValue(FilteredQueuesProperty); }
+            set { SetValue(FilteredQueuesProperty, value); }
+        }
+
+        public static readonly DependencyProperty NameFilterProperty =
+            DependencyProperty.Register("NameFilter", typeof(string), typeof(QueueSelectionModel),
+                new FrameworkPropertyMetadata((sender,e) => {
+                    var model = sender as QueueSelectionModel;
+                    if (model != null) model.Filter();
+                }));
+        public string NameFilter {
+            get { return (string)GetValue(NameFilterProperty); }
+            set { SetValue(NameFilterProperty, value); }
+        }
+
         public QueueSelectionModel(AccountModel account) {
             Queues = new ObservableCollection<QueueModel>();
+            FilteredQueues = new ListCollectionView(Queues);
             Account = account;
             Populate();
         }
@@ -46,6 +67,20 @@ namespace ClearAzureQueues.Models {
             worker.RunWorkerCompleted += (sender, e) => {
             };
             worker.RunWorkerAsync(Account.Client);
+        }
+
+        private void Filter() {
+            if (String.IsNullOrEmpty(NameFilter)) {
+                FilteredQueues.Filter = null;
+            } else {
+                FilteredQueues.Filter = new Predicate<object>(x => {
+                    var model = x as QueueModel;
+                    return
+                        model != null && 
+                        model.QueueName != null &&
+                        model.QueueName.Contains(NameFilter);
+                });
+            }
         }
     }
 }
