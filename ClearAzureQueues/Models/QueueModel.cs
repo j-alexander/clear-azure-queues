@@ -93,6 +93,7 @@ namespace ClearAzureQueues.Models {
                 }
             };
             worker.RunWorkerCompleted += (sender, e) => {
+                IsCancelling = false;
                 IsExecuting = false;
             };
             worker.RunWorkerAsync(Queue);
