@@ -8,6 +8,11 @@
         <converters:BooleanConverter x:Key="Negate" True="False" False="True"/>
         <converters:BooleanToVisibilityConverter x:Key="Visibility"/>
         <converters:BooleanToVisibilityConverter x:Key="NegateVisibility" True="Collapsed" False="Visible"/>
+        <converters:ListViewItemColorConverter x:Key="AlternatingRowColor" Even="White">
+            <converters:ListViewItemColorConverter.Odd>
+                <SolidColorBrush Color="#F8F8F8"/>
+            </converters:ListViewItemColorConverter.Odd>
+        </converters:ListViewItemColorConverter>
         <converters:SingleLineTextConverter x:Key="SingleLine" />
     </Application.Resources>
 </Application>
