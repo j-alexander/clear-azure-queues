@@ -78,5 +78,39 @@ namespace ClearAzureQueues {
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
             Process.Start(e.Uri.ToString());
         }
+
+        private void MoveAccountUp_Click(object sender, RoutedEventArgs e) {
+            var i = AccountSelection.SelectedIndex;
+            if (i > 0) {
+                var model = Model.Accounts[i];
+                Model.Accounts.RemoveAt(i);
+                Model.Accounts.Insert(i - 1, model);
+                AccountSelection.SelectedIndex = i - 1;
+            }
+        }
+
+        private void MoveAccountDown_Click(object sender, RoutedEventArgs e) {
+            var i = AccountSelection.SelectedIndex;
+            if (i >= 0 && i + 1 < Model.Accounts.Count) {
+                var model = Model.Accounts[i];
+                Model.Accounts.RemoveAt(i);
+                Model.Accounts.Insert(i + 1, model);
+                AccountSelection.SelectedIndex = i + 1;
+            }
+        }
+
+        private void RemoveAccount_Click(object sender, RoutedEventArgs e) {
+            var model = AccountSelection.SelectedItem as QueueSelectionModel;
+            if (model != null) {
+                var prompt = String.Format("Removing account '{0}': are you sure?", model.Account.AccountName);
+                var result = MessageBox.Show(prompt, "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes) {
+                    foreach (var queue in model.Queues) {
+                        queue.Cancel();
+                    }
+                    Model.Accounts.Remove(model);
+                }
+            }
+        }
     }
 }
