@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
@@ -96,9 +97,9 @@ namespace ClearAzureQueues.Models {
                 FilteredQueues.Filter = new Predicate<object>(x => {
                     var model = x as QueueModel;
                     return
-                        model != null && 
+                        model != null &&
                         model.QueueName != null &&
-                        model.QueueName.Contains(NameFilter);
+                        NameFilter.Split(' ').All(model.QueueName.Contains);
                 });
             }
         }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClearAzureQueues"
         mc:Ignorable="d"
-        Title="Clear Azure Queues" Height="350" Width="680"
+        Title="Clear Azure Queues" Height="350" Width="700"
         WindowStartupLocation="CenterScreen"
         FocusManager.FocusedElement="{Binding ElementName=NewAccount}">
     <Grid Margin="10">
