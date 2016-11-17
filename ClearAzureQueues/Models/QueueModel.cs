@@ -78,7 +78,7 @@ namespace ClearAzureQueues.Models {
                 var queue = (CloudQueue)e.Argument;
                 while (!IsCancelling) {
                     queue.FetchAttributes();
-                    if (watch.Elapsed > TimeSpan.FromSeconds(3)) {
+                    if (watch.Elapsed > TimeSpan.FromSeconds(1)) {
                         var count = queue.ApproximateMessageCount;
                         if (count != null) {
                             worker.ReportProgress(0, count);
@@ -87,7 +87,7 @@ namespace ClearAzureQueues.Models {
                     }
                     try {
                         queue.Clear(new QueueRequestOptions() {
-                            MaximumExecutionTime = TimeSpan.FromSeconds(10)
+                            MaximumExecutionTime = TimeSpan.FromSeconds(3)
                         });
                     } catch (Exception) { Thread.Sleep(1000); }
                 }
