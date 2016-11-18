@@ -1,13 +1,9 @@
-﻿using ClearAzureQueues.Models;
-using ClearAzureQueues.Settings;
+﻿using ClearAzureQueues.Settings;
 using ClearAzureQueues.ViewModels;
-using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
-using System.Windows.Threading;
 
 namespace ClearAzureQueues.Views {
 

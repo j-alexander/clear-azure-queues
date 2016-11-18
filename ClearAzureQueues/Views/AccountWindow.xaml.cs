@@ -1,5 +1,4 @@
-﻿using ClearAzureQueues.Models;
-using ClearAzureQueues.ViewModels;
+﻿using ClearAzureQueues.ViewModels;
 using System;
 using System.Windows;
 
