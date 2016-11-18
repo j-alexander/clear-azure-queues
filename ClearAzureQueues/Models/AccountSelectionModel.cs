@@ -25,6 +25,13 @@ namespace ClearAzureQueues.Models {
             set { SetValue(AccountsProperty, value); }
         }
 
+        public static readonly DependencyProperty SelectedAccountProperty =
+            DependencyProperty.Register("SelectedAccount", typeof(QueueSelectionModel), typeof(AccountSelectionModel));
+        public QueueSelectionModel SelectedAccount {
+            get { return (QueueSelectionModel)GetValue(SelectedAccountProperty); }
+            set { SetValue(SelectedAccountProperty, value); }
+        }
+
         public AccountSelectionModel() {
             Accounts = new ObservableCollection<QueueSelectionModel>();
         }

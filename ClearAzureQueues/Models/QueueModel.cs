@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 
 namespace ClearAzureQueues.Models {
 
@@ -100,12 +101,15 @@ namespace ClearAzureQueues.Models {
             worker.RunWorkerCompleted += (sender, e) => {
                 IsCancelling = false;
                 IsExecuting = false;
+                CommandManager.InvalidateRequerySuggested();
             };
             worker.RunWorkerAsync(Queue);
         }
 
         public void Cancel() {
-            IsCancelling = true;
+            if (IsExecuting) {
+                IsCancelling = true;
+            }
         }
     }
 }
