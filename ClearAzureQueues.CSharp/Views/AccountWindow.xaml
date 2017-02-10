@@ -18,7 +18,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-
+        
         <Label Grid.Row="0">Account Name:</Label>
         <TextBox Grid.Row="1" Name="AccountName"
                  Text="{Binding Path=Model.AccountName, UpdateSourceTrigger=PropertyChanged}"
