@@ -52,26 +52,28 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Content Include="packages.config" />
-    <None Include="App.xaml" />
-    <Compile Include="App.fs" />
+    <Compile Include="Shared.fs" />
     <Compile Include="Settings\AccountSettings.fs" />
     <Compile Include="Settings\QueueSelectionSettings.fs" />
     <Compile Include="Settings\AccountSelectionSettings.fs" />
-    <Compile Include="Settings\SettingsFile.fs" />
     <Compile Include="Models\AccountModel.fs" />
     <Compile Include="Models\QueueModel.fs" />
     <Compile Include="Models\QueueSelectionModel.fs" />
     <Compile Include="Models\AccountSelectionModel.fs" />
-    <Compile Include="ViewModels\AccountViewModel.fs" />
-    <Compile Include="ViewModels\MainViewModel.fs" />
+    <Compile Include="Persistence\SettingsFile.fs" />
+    <Compile Include="Commands\RelayCommand.fs" />
     <Compile Include="Converters\AbstractBooleanConverter.fs" />
     <Compile Include="Converters\BooleanConverter.fs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.fs" />
     <Compile Include="Converters\ListViewItemColorConverter.fs" />
     <Compile Include="Converters\SingleLineTextConverter.fs" />
-    <Compile Include="Commands\RelayCommand.fs" />
     <None Include="Views\AccountWindow.xaml" />
     <None Include="Views\MainWindow.xaml" />
+    <Compile Include="Views\Views.fs" />
+    <Compile Include="ViewModels\AccountViewModel.fs" />
+    <Compile Include="ViewModels\MainViewModel.fs" />
+    <None Include="App.xaml" />
+    <Compile Include="App.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsXaml.Wpf">

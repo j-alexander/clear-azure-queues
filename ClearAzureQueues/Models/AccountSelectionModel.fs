@@ -4,6 +4,7 @@ open System.Collections.ObjectModel
 open System.Linq
 open System.Windows
 
+open ClearAzureQueues
 open ClearAzureQueues.Settings
 
 type AccountSelectionModel() =
@@ -12,7 +13,7 @@ type AccountSelectionModel() =
     let accounts = new ObservableCollection<QueueSelectionModel>()
 
     static let selectedAccount =
-        DependencyProperty.Register("SelectedAccount", typeof<QueueSelectionModel>, typeof<AccountSelectionModel>)
+        DependencyProperty.Register("SelectedAccount", typeof<QueueSelectionModel option>, typeof<AccountSelectionModel>)
 
     new { Accounts = accounts } as x =
         AccountSelectionModel() then

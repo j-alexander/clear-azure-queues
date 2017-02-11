@@ -8,6 +8,7 @@ open System.Windows
 open System.Windows.Data
 open Microsoft.WindowsAzure.Storage.Queue
 
+open ClearAzureQueues
 open ClearAzureQueues.Settings
 
 type QueueSelectionModel(account:AccountModel) as x =

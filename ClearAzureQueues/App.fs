@@ -11,4 +11,4 @@ module App =
     [<STAThread>]
     [<EntryPoint>]
     let main argv =
-        ()
+        0
