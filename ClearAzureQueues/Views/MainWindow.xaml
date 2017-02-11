@@ -1,9 +1,7 @@
-﻿<Window x:Class="ClearAzureQueues.Views.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ClearAzureQueues"
         mc:Ignorable="d"
         Name="Window"
         Title="Clear Azure Queues" Height="350" Width="700"
@@ -37,7 +35,6 @@
         </Grid>
 
         <ListView Grid.Column="0" Grid.Row="1" Grid.RowSpan="1" Name="AccountSelection" SelectionMode="Single"
-                  MouseDoubleClick="AccountSelection_MouseDoubleClick"
                   SelectedItem="{Binding Model.SelectedAccount}"
                   ItemsSource="{Binding Model.Accounts}">
             <ListView.View>
@@ -46,6 +43,9 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
+                                    <StackPanel.InputBindings>
+                                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Connect}"/>
+                                    </StackPanel.InputBindings>
                                     <Label VerticalAlignment="Center" Padding="0" Visibility="{Binding Path=Account.IsConnected, Converter={StaticResource Visibility}}">⚫</Label>
                                     <Label VerticalAlignment="Center" Padding="0" Visibility="{Binding Path=Account.IsConnected, Converter={StaticResource NegateVisibility}}">⚪</Label>
                                     <Label Content="{Binding Path=Account.AccountName}"/>
@@ -63,7 +63,7 @@
             <Button Name="MoveAccountUp" Padding="5 0 5 0" DockPanel.Dock="Right" Command="{Binding MoveAccountUp}">▲</Button>
             <Label/>
         </DockPanel>
-        
+
         <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Stretch"/>
 
         <ListView Grid.Column="2" Grid.Row="1" Grid.RowSpan="1" Name="QueueSelection" SelectionMode="Single"
@@ -101,8 +101,7 @@
             <Button Name="AbortAll" Padding="5 0 5 0" Command="{Binding AbortAll}">/ All</Button>
             <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
                 <Label Foreground="LightGray" DockPanel.Dock="Right">
-                    <Hyperlink NavigateUri="https://github.com/j-alexander/clear-azure-queues"
-                               RequestNavigate="Hyperlink_RequestNavigate">
+                    <Hyperlink Command="{Binding Path=Browse}">
                         https://github.com/j-alexander/clear-azure-queues
                     </Hyperlink>
                 </Label>

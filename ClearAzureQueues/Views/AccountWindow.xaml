@@ -1,10 +1,8 @@
-﻿<Window x:Class="ClearAzureQueues.Views.AccountWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ClearAzureQueues"
-        xmlns:converters="clr-namespace:ClearAzureQueues.Converters"
+        xmlns:converters="clr-namespace:ClearAzureQueues.Converters;assembly=ClearAzureQueues"
         mc:Ignorable="d"
         Title="Open Account" Height="200" Width="450"
         WindowStartupLocation="CenterOwner"
@@ -18,7 +16,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <Label Grid.Row="0">Account Name:</Label>
         <TextBox Grid.Row="1" Name="AccountName"
                  Text="{Binding Path=Model.AccountName, UpdateSourceTrigger=PropertyChanged}"
