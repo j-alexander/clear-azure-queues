@@ -10,12 +10,11 @@ open Microsoft.WindowsAzure.Storage.Queue
 
 open ClearAzureQueues.Settings
 
-type QueueModel(queue:CloudQueue) as x =
+[<AllowNullLiteral>]
+type QueueModel(queue:CloudQueue) =
     inherit DependencyObject()
 
     let isCancelling = ref false
-
-    do x.UpdateStatus()
 
     static let queueName =
         DependencyProperty.Register("QueueName", typeof<string>, typeof<QueueModel>)

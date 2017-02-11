@@ -1,6 +1,7 @@
 ﻿namespace ClearAzureQueues.ViewModels
 
 open System
+open System.Diagnostics
 open System.Linq
 open System.Windows
 open System.Windows.Input
@@ -35,17 +36,20 @@ type MainViewModel(model:AccountSelectionModel) =
         timer.Start()
         timer
 
-    let connect() =
-        ifSelected(fun selection ->
-            selection.Account.Connect(selection.Populate, ignore))
+    let connect =
+        new RelayCommand(
+            ifSelected(fun selection ->
+                selection.Account.Connect(selection.Populate, ignore)))
 
     let newAccount =
         new RelayCommand(
-            fun _ -> true
-            ,
             fun x ->
                 let dialog = new AccountWindow()
                 dialog.Owner <- x :?> Window
+                dialog.DataContext <- 
+                    let onSuccess() = if dialog.IsVisible then dialog.DialogResult <- Nullable(true)
+                    let onFailure() = ()
+                    new AccountViewModel(onSuccess, onFailure)
                 let result = dialog.ShowDialog()
                 if result.HasValue && result.Value then
                     let accountViewModel = dialog.DataContext :?> AccountViewModel
@@ -70,7 +74,9 @@ type MainViewModel(model:AccountSelectionModel) =
 
     let moveAccountUp =
         new RelayCommand(
-            isSelected
+            selectedAccount
+            >> Option.map(model.Accounts.IndexOf >> (<) 0)
+            >> Option.getValueOr false
             ,
             ifSelected(fun selection ->
                 let i = model.Accounts.IndexOf(selection)
@@ -81,13 +87,17 @@ type MainViewModel(model:AccountSelectionModel) =
 
     let moveAccountDown =
         new RelayCommand(
-            isSelected
+            selectedAccount
+            >> Option.map(fun selection ->
+                let i = model.Accounts.IndexOf(selection)
+                i >= 0 && i + 1 < model.Accounts.Count)
+            >> Option.getValueOr false
             ,
             ifSelected(fun selection ->
                 let i = model.Accounts.IndexOf(selection)
                 if i >= 0 && i + 1 < model.Accounts.Count then
                     model.Accounts.RemoveAt(i)
-                    model.Accounts.Insert(i-1, selection)
+                    model.Accounts.Insert(i+1, selection)
                     model.SelectedAccount <- selection))
 
     let erase =
@@ -122,6 +132,12 @@ type MainViewModel(model:AccountSelectionModel) =
                 |> Seq.filter (fun x -> x.IsExecuting)
                 |> Seq.iter (fun x -> x.Cancel()))
 
+    let browse =
+        new RelayCommand(fun _ ->
+            @"https://github.com/j-alexander/clear-azure-queues"
+            |> Process.Start
+            |> ignore)
+
     member public x.Model = model
     member public x.Timer = timer
     member public x.Connect = connect
@@ -132,3 +148,4 @@ type MainViewModel(model:AccountSelectionModel) =
     member public x.EraseQueue = erase
     member public x.Abort = abort
     member public x.AbortAll = abortAll
+    member public x.Browse = browse

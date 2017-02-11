@@ -13,7 +13,7 @@ type AccountSelectionModel() =
     let accounts = new ObservableCollection<QueueSelectionModel>()
 
     static let selectedAccount =
-        DependencyProperty.Register("SelectedAccount", typeof<QueueSelectionModel option>, typeof<AccountSelectionModel>)
+        DependencyProperty.Register("SelectedAccount", typeof<QueueSelectionModel>, typeof<AccountSelectionModel>)
 
     new { Accounts = accounts } as x =
         AccountSelectionModel() then
@@ -24,7 +24,7 @@ type AccountSelectionModel() =
         { Accounts = x.Accounts |> Seq.map (fun x -> x.Settings) |> Seq.toArray }
 
     member public x.SelectedAccount
-        with get() = x.GetValue(selectedAccount) :?> QueueSelectionModel
+        with get() = match x.GetValue(selectedAccount) with :? QueueSelectionModel as m -> m | _ -> null
         and set(value:QueueSelectionModel) = x.SetValue(selectedAccount, value)
 
     member public x.Accounts : ObservableCollection<QueueSelectionModel> = accounts

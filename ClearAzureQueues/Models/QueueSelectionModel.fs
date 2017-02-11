@@ -11,22 +11,43 @@ open Microsoft.WindowsAzure.Storage.Queue
 open ClearAzureQueues
 open ClearAzureQueues.Settings
 
-type QueueSelectionModel(account:AccountModel) as x =
+[<AllowNullLiteral>]
+type QueueSelectionModel(account:AccountModel) =
     inherit DependencyObject()
 
     let queues = new ObservableCollection<QueueModel>()
     let filteredQueues = new ListCollectionView(queues)
 
-    do x.Populate()
+    let populate() =
+        match account.Client with
+        | Some client when account.IsConnected ->
+            let worker = new BackgroundWorker()
+            worker.WorkerReportsProgress <- true
+            worker.DoWork.Add(fun e ->
+                for queue in client.ListQueues() do
+                    worker.ReportProgress(0, queue))
+            worker.ProgressChanged.Add(fun e ->
+                let queue = e.UserState :?> CloudQueue
+                let exists =
+                    queues
+                    |> Seq.exists (fun x -> x.QueueName = queue.Name)
+                if not exists then
+                    let queueModel = new QueueModel(queue)
+                    queueModel.UpdateStatus()
+                    queues.Add(queueModel))
+            worker.RunWorkerAsync()
+        | _ -> ()
+
+    do populate()
 
     static let selectedQueue =
         DependencyProperty.Register("SelectedQueue", typeof<QueueModel>, typeof<QueueSelectionModel>)
     static let nameFilter =
         DependencyProperty.Register("NameFilter", typeof<string>, typeof<QueueSelectionModel>,
-            new FrameworkPropertyMetadata(fun (sender:DependencyObject, _) ->
+            new FrameworkPropertyMetadata(new PropertyChangedCallback(fun (sender:DependencyObject) _ ->
                 match sender with
                 | :? QueueSelectionModel as model -> model.Filter()
-                | _ -> ()))
+                | _ -> ())))
 
     new { Account = account
           NameFilter = nameFilter } as x =
@@ -42,7 +63,7 @@ type QueueSelectionModel(account:AccountModel) as x =
         and set(value:string) = x.SetValue(nameFilter, value)
 
     member public x.SelectedQueue
-        with get() = x.GetValue(selectedQueue) :?> QueueModel
+        with get() = match x.GetValue(selectedQueue) with :? QueueModel as m -> m | _ -> null
         and set(value:QueueModel) = x.SetValue(selectedQueue, value)
 
     member public x.Account = account
@@ -51,23 +72,7 @@ type QueueSelectionModel(account:AccountModel) as x =
 
     member public x.FilteredQueues = filteredQueues
 
-    member public x.Populate() =
-        match account.Client with
-        | Some client when account.IsConnected ->
-            let worker = new BackgroundWorker()
-            worker.WorkerReportsProgress <- true
-            worker.DoWork.Add(fun e ->
-                for queue in client.ListQueues() do
-                    worker.ReportProgress(0, queue))
-            worker.ProgressChanged.Add(fun e ->
-                let queue = e.UserState :?> CloudQueue
-                let exists =
-                    x.Queues
-                    |> Seq.exists (fun x -> x.QueueName = queue.Name)
-                if not exists then
-                    x.Queues.Add(new QueueModel(queue)))
-            worker.RunWorkerAsync()
-        | _ -> ()
+    member public x.Populate() = populate()
 
     member public x.Filter() =
         if String.IsNullOrWhiteSpace(x.NameFilter) then
