@@ -11,9 +11,7 @@ open ClearAzureQueues.Models
 open ClearAzureQueues.Views
 open ClearAzureQueues.Persistence
 
-type MainViewModel() =
-
-    let model = SettingsFile.Load()
+type MainViewModel(model:AccountSelectionModel) =
     
     let selectedAccount _ =
         model.SelectedAccount
@@ -37,7 +35,7 @@ type MainViewModel() =
         timer.Start()
         timer
 
-    let connectToSelectedAccount() =
+    let connect() =
         ifSelected(fun selection ->
             selection.Account.Connect(selection.Populate, ignore))
 
@@ -123,3 +121,14 @@ type MainViewModel() =
                 |> Seq.collect (fun x -> x.Queues)
                 |> Seq.filter (fun x -> x.IsExecuting)
                 |> Seq.iter (fun x -> x.Cancel()))
+
+    member public x.Model = model
+    member public x.Timer = timer
+    member public x.Connect = connect
+    member public x.NewAccount = newAccount
+    member public x.RemoveAccount = removeAccount
+    member public x.MoveAccountUp = moveAccountUp
+    member public x.MoveAccountDown = moveAccountDown
+    member public x.EraseQueue = erase
+    member public x.Abort = abort
+    member public x.AbortAll = abortAll

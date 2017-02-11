@@ -1,8 +1,7 @@
 ﻿<Application x:Class="ClearAzureQueues.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ClearAzureQueues,Assembly=ClearAzureQueues"
-             xmlns:converters="clr-namespace:ClearAzureQueues.Converters"
+             xmlns:converters="clr-namespace:ClearAzureQueues.Converters;assembly=ClearAzureQueues"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <converters:BooleanConverter x:Key="Negate" True="False" False="True"/>

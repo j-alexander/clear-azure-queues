@@ -67,12 +67,12 @@
     <Compile Include="Converters\BooleanToVisibilityConverter.fs" />
     <Compile Include="Converters\ListViewItemColorConverter.fs" />
     <Compile Include="Converters\SingleLineTextConverter.fs" />
-    <None Include="Views\AccountWindow.xaml" />
-    <None Include="Views\MainWindow.xaml" />
+    <Resource Include="Views\AccountWindow.xaml" />
+    <Resource Include="Views\MainWindow.xaml" />
     <Compile Include="Views\Views.fs" />
     <Compile Include="ViewModels\AccountViewModel.fs" />
     <Compile Include="ViewModels\MainViewModel.fs" />
-    <None Include="App.xaml" />
+    <Resource Include="App.xaml" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <ItemGroup>
