@@ -7,12 +7,6 @@ module Shared =
         if obj.ReferenceEquals(null, x) then Null
         else NotNull x
 
-    let ifNullOr x fn = function
-        | Null -> x
-        | NotNull x -> fn x
-
-    let ifNull fn = ifNullOr () fn
-
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Option =
 
