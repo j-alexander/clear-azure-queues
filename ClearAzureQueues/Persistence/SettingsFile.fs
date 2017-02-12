@@ -30,6 +30,5 @@ type SettingsFile() =
         try
             let settings = model.Settings
             let json = JsonConvert.SerializeObject(settings,Formatting.Indented)
-            //File.WriteAllText(file, json)
-            File.WriteAllText(@"C:\Users\Jonathan\Desktop\settings.json", json)
+            File.WriteAllText(file, json)
         with _ -> ()
