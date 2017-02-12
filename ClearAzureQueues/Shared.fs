@@ -14,10 +14,6 @@ module Shared =
             | Null -> None
             | NotNull x -> Some x
 
-        let iterNone action = function
-            | None -> action()
-            | Some _ -> ()
-
         let getValueOr x = function
             | None -> x
             | Some x -> x
